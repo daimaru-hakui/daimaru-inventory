@@ -9,9 +9,14 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
-import SkuForm from "./SkuForm";
+import SkuForm from "./ItemsForm";
+import { FC } from "react";
 
-const SkuNew = () => {
+type Props = {
+  slug: string | undefined;
+};
+
+const ItemsNewModal: FC<Props> = ({ slug }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
@@ -23,7 +28,7 @@ const SkuNew = () => {
           <ModalHeader>詳細追加</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <SkuForm />
+            <SkuForm slug={slug} />
           </ModalBody>
 
           <ModalFooter>
@@ -38,4 +43,4 @@ const SkuNew = () => {
   );
 };
 
-export default SkuNew;
+export default ItemsNewModal;

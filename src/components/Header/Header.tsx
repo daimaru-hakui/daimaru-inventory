@@ -32,13 +32,16 @@ export const Header: FC = () => {
             <Link to="/">HOME</Link>
           </Box>
           <Box>
+            <Link to="/skus">SKU</Link>
+          </Box>
+          <Box>
             <Link to="/products">商品一覧</Link>
           </Box>
           <Box>
             <Link to="/products/new">商品登録</Link>
           </Box>
           <Box>
-            <Link to="/qr-code">QRCode</Link>
+            <Link to="/investroy-control">入出庫</Link>
           </Box>
           <Box>
             {session ? (

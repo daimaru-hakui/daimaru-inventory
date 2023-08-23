@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import Layout from "../../components/Layout/Layout";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {
@@ -21,28 +21,46 @@ type Inputs = {
 };
 
 const ProductNew: FC = () => {
+  const [categories, setCategories] = useState<
+    { id: string; category_name: string }[] | null
+  >([]);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
-    console.log(data);
     await addProduct(data);
   };
 
   const addProduct = async (data: Inputs) => {
-    const { data: product, error } = await supabase
-      .from("products")
-      .insert([
-        { product_number: data.productNumber, product_name: data.productName },
-      ]);
+    const { data: product, error } = await supabase.from("products").insert([
+      {
+        product_number: data.productNumber,
+        product_name: data.productName,
+        category_id: data.category,
+      },
+    ]);
 
     if (error) {
       console.error(error);
+      alert("登録に失敗しました。")
     }
     console.log(product);
   };
+
+  useEffect(() => {
+    const getColors = async () => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select(`id,category_name`);
+      if (error) {
+        console.error(error);
+      }
+      setCategories(data);
+    };
+    getColors();
+  }, []);
 
   return (
     <Layout>
@@ -80,9 +98,11 @@ const ProductNew: FC = () => {
                 placeholder="カテゴリー"
                 {...register("category", { required: true })}
               >
-                <option value="option1">上着</option>
-                <option value="option2">パンツ</option>
-                <option value="option3">帽子</option>
+                {categories?.map(({ id, category_name }) => (
+                  <option key={id} value={id}>
+                    {category_name}
+                  </option>
+                ))}
               </Select>
             </FormControl>
             <Button mt={6} type="submit" colorScheme="linkedin">

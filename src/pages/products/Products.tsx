@@ -19,7 +19,13 @@ const Products: FC = () => {
 
   useEffect(() => {
     const getProducts = async () => {
-      const { data, error } = await supabase.from("products").select("*");
+      const { data, error } = await supabase
+        .from("products")
+        .select(
+          `id,product_number,product_name,
+          items(price,skus(stock,stock_places(stock_place_name)),
+          sizes(*,size_name))`
+        );
       if (error) {
         console.error(error);
       }
@@ -27,7 +33,7 @@ const Products: FC = () => {
     };
     getProducts();
   }, []);
-
+  console.log(products);
   return (
     <Layout>
       <Container maxW="600px">
@@ -45,7 +51,11 @@ const Products: FC = () => {
                 <Tr key={product.id}>
                   <Td>{product.product_number}</Td>
                   <Td>{product.product_name}</Td>
-                  <Td><Link to={`/products/${product.id}`}><Button>詳細</Button></Link></Td>
+                  <Td>
+                    <Link to={`/products/${product.id}`}>
+                      <Button>詳細</Button>
+                    </Link>
+                  </Td>
                 </Tr>
               ))}
             </Tbody>

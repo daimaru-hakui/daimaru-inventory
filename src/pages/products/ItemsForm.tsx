@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -17,15 +17,24 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { supabase } from "../../utils/supabaseClient";
 
 type Inputs = {
+  slug: string;
   color: string;
   size: string;
   price: string;
 };
 
-const SkuForm = () => {
+type Props = {
+  slug: string | undefined;
+};
+
+const SkuForm: FC<Props> = ({ slug }) => {
   const [sizes, setSizes] = useState<
     { id: string; size_name: string }[] | null
   >([]);
+  const [colors, setColors] = useState<
+    { id: string; color_name: string }[] | null
+  >([]);
+
   useEffect(() => {
     const getSizes = async () => {
       const { data, error } = await supabase
@@ -39,6 +48,19 @@ const SkuForm = () => {
     getSizes();
   }, []);
 
+  useEffect(() => {
+    const getColors = async () => {
+      const { data, error } = await supabase
+        .from("colors")
+        .select(`id,color_name`);
+      if (error) {
+        console.error(error);
+      }
+      setColors(data);
+    };
+    getColors();
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -46,6 +68,41 @@ const SkuForm = () => {
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
     console.log(data);
+    await addItem(data);
+    // location.reload();
+  };
+
+  const addItem = async (data: Inputs) => {
+    const { data: stockPlaces } = await supabase
+      .from("stock_places")
+      .select("id");
+
+    const { data: item, error } = await supabase
+      .from("items")
+      .insert([
+        {
+          product_id: slug,
+          color_id: data.color,
+          size_id: data.size,
+          price: data.price,
+        },
+      ])
+      .select()
+      .single();
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    const { data: sku, error: skuError } = await supabase.from("skus").upsert(
+      stockPlaces?.map((place) => ({
+        stock_place_id: place.id,
+        item_id: item.id,
+        stock: 0,
+      })),
+    );
+    console.log(sku);
+    console.log("error", skuError);
   };
 
   return (
@@ -57,9 +114,11 @@ const SkuForm = () => {
             placeholder="カラー"
             {...register("color", { required: true })}
           >
-            <option value="1">黒</option>
-            <option value="2">赤</option>
-            <option value="3">白</option>
+            {colors?.map(({ id, color_name }) => (
+              <option key={id} value={id}>
+                {color_name}
+              </option>
+            ))}
           </Select>
           {errors.color && (
             <Box color="red" fontSize="sm" textAlign="left">
@@ -73,8 +132,10 @@ const SkuForm = () => {
             placeholder="サイズ"
             {...register("size", { required: true })}
           >
-            {sizes?.map((size)=>(
-            <option key={size.id} value={size.id}>{size.size_name}</option>
+            {sizes?.map(({ id, size_name }) => (
+              <option key={id} value={id}>
+                {size_name}
+              </option>
             ))}
           </Select>
           {errors.size && (

@@ -16,11 +16,12 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { supabase } from "../../utils/supabaseClient";
-import SkuNew from "./SkuNew";
+import SkuNewModal from "./ItemNewModal";
 
 const Product = () => {
   const { slug } = useParams();
   const [product, setProduct] = useState<any>();
+  const [skus, setSkus] = useState<any>();
 
   useEffect(() => {
     const getProduct = async (slug: string = "") => {
@@ -39,7 +40,29 @@ const Product = () => {
     getProduct(slug);
   }, [slug]);
 
+  useEffect(() => {
+    const getSkus = async (slug: string = "") => {
+      const { data, error } = await supabase
+        .from("items")
+        .select(
+          `id,product_code,price,created_at,
+          products(product_number,product_name),
+          colors(color_name),
+          sizes(size_name)`
+        )
+        .eq("product_id", slug);
+
+      if (error) {
+        console.error(error);
+      }
+      console.log("skus", data);
+      setSkus(data);
+    };
+    getSkus(slug);
+  }, [slug]);
+
   if (!product) return;
+  if (!skus) return;
 
   return (
     <Layout>
@@ -55,7 +78,7 @@ const Product = () => {
             <Box>{product.product_name}</Box>
           </Flex>
           <Flex>
-            <SkuNew />
+            <SkuNewModal slug={slug} />
           </Flex>
         </Stack>
         <TableContainer mt={6}>
@@ -70,26 +93,15 @@ const Product = () => {
               </Tr>
             </Thead>
             <Tbody>
-              <Tr>
-                <Td>SP110</Td>
-                <Td>コックコート</Td>
-                <Td>白</Td>
-                <Td>S</Td>
-                <Td>1500</Td>
-              </Tr>
-              <Tr>
-                <Td>SP110</Td>
-                <Td>コックコート</Td>
-                <Td>白</Td>
-                <Td>M</Td>
-                <Td>1500</Td>
-              </Tr>
-              {/* {sku.map((product: any) => (
-                <Tr key={product.id}>
-                  <Td>{product.product_number}</Td>
-                  <Td>{product.product_name}</Td>
+              {skus.map((sku: any) => (
+                <Tr key={sku.id}>
+                  <Td>{sku.products.product_number}</Td>
+                  <Td>{sku.products.product_name}</Td>
+                  <Td>{sku.colors.color_name}</Td>
+                  <Td>{sku.sizes.size_name}</Td>
+                  <Td>{sku.price}</Td>
                 </Tr>
-              ))} */}
+              ))}
             </Tbody>
           </Table>
         </TableContainer>

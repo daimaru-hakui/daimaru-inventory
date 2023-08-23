@@ -9,12 +9,17 @@ import Products from "./pages/products/Products.tsx";
 import { ChakraProvider } from "@chakra-ui/react";
 import Login from "./pages/Login.tsx";
 import Product from "./pages/products/Product.tsx";
-import QrCodeReader from "./pages/qr/QrCodeReader.tsx";
+import InvestoryControl from "./pages/inventory-control/InvestoryControl.tsx";
+import Skus from "./pages/skus/Skus.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+  },
+  {
+    path: "skus",
+    element: <Skus />,
   },
   {
     path: "products",
@@ -29,8 +34,8 @@ const router = createBrowserRouter([
     element: <ProductNew />,
   },
   {
-    path: "qr-code",
-    element: <QrCodeReader />,
+    path: "investroy-control",
+    element: <InvestoryControl />,
   },
   {
     path: "/login",

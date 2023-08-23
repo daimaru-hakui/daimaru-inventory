@@ -1,17 +1,21 @@
-import { Box, Button, Container, Flex, Input } from "@chakra-ui/react";
+import { Box, Button, Container, Flex } from "@chakra-ui/react";
 import Layout from "../../components/Layout/Layout";
-import { BrowserQRCodeReader, IScannerControls } from "@zxing/browser";
-import { useRef, useState } from "react";
+import { BrowserMultiFormatReader, IScannerControls } from "@zxing/browser";
+import { FC, useRef, useState } from "react";
 
-const QrCodeReader = () => {
+type Props = {
+  setDetails: (prev: any) => void;
+};
+
+export const BarcodeReader: FC<Props> = ({ setDetails }) => {
   const controlsRef = useRef<IScannerControls | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [reader, setReader] = useState<IScannerControls>();
 
-
   const startCodeReader = async () => {
     if (!videoRef.current) return;
-    const codeReader = new BrowserQRCodeReader();
+    const codeReader = new BrowserMultiFormatReader();
+    // const codeReader = new BrowserQRCodeReader();
 
     const controls = await codeReader.decodeFromVideoDevice(
       undefined,
@@ -22,7 +26,8 @@ const QrCodeReader = () => {
           return;
         }
         if (result) {
-          console.log(result);
+          console.log(result.getText())
+          setDetails((prev: any) => [...prev, result.getText()]);
         }
         controlsRef.current?.stop();
         controlsRef.current = controls;
@@ -56,10 +61,7 @@ const QrCodeReader = () => {
             Start
           </Button>
         </Flex>
-        <Input />
       </Container>
     </Layout>
   );
 };
-
-export default QrCodeReader;
