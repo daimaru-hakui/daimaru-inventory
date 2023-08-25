@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../../components/Layout/Layout";
 import {
   Box,
   Table,
@@ -9,65 +8,68 @@ import {
   Td,
   TableContainer,
   Container,
+  Thead,
 } from "@chakra-ui/react";
 import { supabase } from "../../utils/supabaseClient";
 
 const Skus = () => {
-  const [products, setProducts] = useState<any>([]);
+  const [items, setItems] = useState<any>([]);
 
   useEffect(() => {
     const getProducts = async () => {
-      const { data, error } = await supabase.from("products").select(
-        `id,product_number,product_name,
-          items(id,price,skus(id,stock,stock_places(id,stock_place_name)),
-          sizes(size_name))`
-      );
+      const { data, error } = await supabase
+        .from("items")
+        .select(
+          `
+        id,price,product_code,
+        products(id,product_number,product_name),
+        colors(id,color_name),
+        sizes(id,size_name),
+        skus(id,stock,stock_places(id,stock_place_name))`
+        )
+        .order("product_code", { ascending: true });
+      // .order("product_number", { foreignTable: "products", ascending: true });
       if (error) {
         console.error(error);
       }
-      setProducts(data);
+      setItems(data);
     };
     getProducts();
   }, []);
-  console.log(products);
+  console.log(items);
   return (
-    <Layout>
-      <Container>
-        <Box>SKUS</Box>
-        <TableContainer maxW={600}>
-          {products.map(({ id, items, product_name, product_number }: any) => (
-            <Table key={id} variant='simple' rounded="lg" bg="whiteAlpha.100">
-              <Tbody>
-                <Tr>
-                  <Td>
-                    {product_name}
-                    {product_number}
-                  </Td>
-                  {items.map(({ id, sizes }: any) => (
-                    <Td key={id}>{sizes.size_name}</Td>
-                  ))}
-                </Tr>
-                <Tr>
-                  <Th>単価</Th>
-                  {items.map(({ id, price }: any) => (
-                    <Td key={id}>{price}円</Td>
-                  ))}
-                </Tr>
-                {items.map(({ skus }: any, idx: number) => (
-                  <Tr key={idx}>
-                    {idx === 0 && <Th>配送センター在庫</Th>}
-                    {idx === 1 && <Th>徳島工場在庫</Th>}
-                    {skus.map(({ stock }: any, idx: number) => (
-                      <Td key={idx}>{stock}</Td>
-                    ))}
-                  </Tr>
+    <Container p={6} maxW={900} bg="white" rounded="md" boxShadow="md">
+      <Box>在庫一覧</Box>
+      <TableContainer mt={6}>
+        <Table>
+          <Thead>
+            <Tr>
+              <Th>品番</Th>
+              <Th>商品名</Th>
+              <Th>サイズ</Th>
+              <Th>カラー</Th>
+              <Th>価格</Th>
+              <Th>在庫１</Th>
+              <Th>在庫２</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {items.map((item: any) => (
+              <Tr key={item.id}>
+                <Td>{item.products.product_number}</Td>
+                <Td>{item.products.product_name}</Td>
+                <Td>{item.sizes.size_name}</Td>
+                <Td>{item.colors.color_name}</Td>
+                <Td>{item.price}</Td>
+                {item.skus.map((sku: any) => (
+                  <Td key={sku.id}>{sku.stock}</Td>
                 ))}
-              </Tbody>
-            </Table>
-          ))}
-        </TableContainer>
-      </Container>
-    </Layout>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
+    </Container>
   );
 };
 

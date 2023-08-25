@@ -24,15 +24,17 @@ export const Header: FC = () => {
   }, []);
 
   return (
-    <Box as="header" w="full" p={3}>
-      <Flex as="nav" maxW="1000px" mx="auto" justify="space-between">
-        <Box> <Link to="/">大丸白衣</Link></Box>
+    <Flex as="header" w="full" bg="white" align="center">
+      <Flex as="nav" w="full" maxW="1000px" h={12} px={2} mx="auto" justify="space-between" align="center">
+        <Box>
+          <Link to="/">大丸白衣</Link>
+        </Box>
         <Flex as="ul" gap={3} fontSize="sm">
           <Box>
             <Link to="/">HOME</Link>
           </Box>
           <Box>
-            <Link to="/skus">SKU</Link>
+            <Link to="/skus">在庫表</Link>
           </Box>
           <Box>
             <Link to="/products">商品一覧</Link>
@@ -54,6 +56,6 @@ export const Header: FC = () => {
           </Box>
         </Flex>
       </Flex>
-    </Box>
+    </Flex>
   );
 };

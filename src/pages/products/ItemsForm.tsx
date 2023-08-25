@@ -12,12 +12,14 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  Input,
 } from "@chakra-ui/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { supabase } from "../../utils/supabaseClient";
 
 type Inputs = {
   slug: string;
+  productCode: string;
   color: string;
   size: string;
   price: string;
@@ -82,6 +84,7 @@ const SkuForm: FC<Props> = ({ slug }) => {
       .insert([
         {
           product_id: slug,
+          product_code: data.productCode,
           color_id: data.color,
           size_id: data.size,
           price: data.price,
@@ -99,7 +102,7 @@ const SkuForm: FC<Props> = ({ slug }) => {
         stock_place_id: place.id,
         item_id: item.id,
         stock: 0,
-      })),
+      }))
     );
     console.log(sku);
     console.log("error", skuError);
@@ -108,6 +111,10 @@ const SkuForm: FC<Props> = ({ slug }) => {
   return (
     <Box as="form" mt={6} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={6}>
+        <FormControl>
+          <FormLabel fontSize="sm">商品コード</FormLabel>
+          <Input {...register("productCode")} />
+        </FormControl>
         <FormControl>
           <FormLabel fontSize="sm">カラー</FormLabel>
           <Select

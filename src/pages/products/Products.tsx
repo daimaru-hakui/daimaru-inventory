@@ -1,18 +1,19 @@
 import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
+  // Table,
+  // Thead,
+  // Tbody,
+  // Tr,
+  // Th,
+  // Td,
+  // TableContainer,
+  // Button,
   Container,
-  Button,
+  Flex,
 } from "@chakra-ui/react";
-import Layout from "../../components/Layout/Layout";
 import { FC, useEffect, useState } from "react";
 import { supabase } from "../../utils/supabaseClient";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
+import ProductCard from "../../components/card/ProductCard";
 
 const Products: FC = () => {
   const [products, setProducts] = useState<any>([]);
@@ -24,8 +25,10 @@ const Products: FC = () => {
         .select(
           `id,product_number,product_name,
           items(price,skus(stock,stock_places(stock_place_name)),
-          sizes(*,size_name))`
-        );
+          colors(id,color_name),
+          sizes(id,size_name))`
+        )
+        .filter(`items.price`, "eq", 1000);
       if (error) {
         console.error(error);
       }
@@ -35,9 +38,13 @@ const Products: FC = () => {
   }, []);
   console.log(products);
   return (
-    <Layout>
-      <Container maxW="600px">
-        <TableContainer>
+    <Container maxW="830px">
+      <Flex gap={6} flexWrap="wrap" justify="center">
+        {products.map((product: any) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
+      </Flex>
+      {/* <TableContainer>
           <Table variant="simple">
             <Thead>
               <Tr>
@@ -60,9 +67,8 @@ const Products: FC = () => {
               ))}
             </Tbody>
           </Table>
-        </TableContainer>
-      </Container>
-    </Layout>
+        </TableContainer> */}
+    </Container>
   );
 };
 

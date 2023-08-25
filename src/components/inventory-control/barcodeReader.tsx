@@ -1,5 +1,4 @@
 import { Box, Button, Container, Flex } from "@chakra-ui/react";
-import Layout from "../../components/Layout/Layout";
 import { BrowserMultiFormatReader, IScannerControls } from "@zxing/browser";
 import { FC, useRef, useState } from "react";
 
@@ -26,7 +25,7 @@ export const BarcodeReader: FC<Props> = ({ setDetails }) => {
           return;
         }
         if (result) {
-          console.log(result.getText())
+          console.log(result.getText());
           setDetails((prev: any) => [...prev, result.getText()]);
         }
         controlsRef.current?.stop();
@@ -43,25 +42,23 @@ export const BarcodeReader: FC<Props> = ({ setDetails }) => {
   };
 
   return (
-    <Layout>
-      <Container maxW={600}>
-        <Box
-          as="video"
-          id="video"
-          width="100%"
-          height="50vh"
-          bg="black"
-          ref={videoRef}
-        ></Box>
-        <Flex mt={3} gap={3}>
-          <Button w="full" onClick={resetCodeReader}>
-            Reset
-          </Button>
-          <Button w="full" colorScheme="linkedin" onClick={startCodeReader}>
-            Start
-          </Button>
-        </Flex>
-      </Container>
-    </Layout>
+    <Container maxW={600}>
+      <Box
+        as="video"
+        id="video"
+        width="100%"
+        height="50vh"
+        bg="black"
+        ref={videoRef}
+      ></Box>
+      <Flex mt={3} gap={3}>
+        <Button w="full" onClick={resetCodeReader}>
+          Reset
+        </Button>
+        <Button w="full" colorScheme="linkedin" onClick={startCodeReader}>
+          Start
+        </Button>
+      </Flex>
+    </Container>
   );
 };

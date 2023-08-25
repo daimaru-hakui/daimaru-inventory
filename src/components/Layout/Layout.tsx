@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { supabase } from "../../utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { Session } from "@supabase/supabase-js";
+import { Box } from "@chakra-ui/react";
 const queryClient = new QueryClient();
 
 const Layout = ({ children }: { children: ReactNode }) => {
@@ -25,7 +26,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
       {session && (
         <QueryClientProvider client={queryClient}>
           <Header />
-          <main>{children}</main>
+          <Box as="main" p={6} bg="#f4f4f4" minH="100vh">
+            {children}
+          </Box>
         </QueryClientProvider>
       )}
     </>
