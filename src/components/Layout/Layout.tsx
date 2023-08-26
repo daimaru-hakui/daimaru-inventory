@@ -7,7 +7,7 @@ import { Session } from "@supabase/supabase-js";
 import { Box } from "@chakra-ui/react";
 const queryClient = new QueryClient();
 
-const Layout = ({ children }: { children: ReactNode }) => {
+const Layout = ({ children }: { children: ReactNode; }) => {
   const navigate = useNavigate();
   const [session, setSession] = useState<Session | null>(null);
 
@@ -26,7 +26,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
       {session && (
         <QueryClientProvider client={queryClient}>
           <Header />
-          <Box as="main" p={6} bg="#f4f4f4" minH="100vh">
+          <Box as="main" p={6} bg="#f4f4f4" minH="calc(100vh - 50px)">
             {children}
           </Box>
         </QueryClientProvider>

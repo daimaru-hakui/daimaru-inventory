@@ -38,12 +38,13 @@ const InventoryInput = () => {
         console.error(error);
         return;
       }
-      setItems(
-        data.map((value) => ({
-          color_name: value.colors?.color_name,
-          id: value.colors.id,
-        }))
-      );
+      console.log(data);
+      // setItems(
+      //   data.map((value) => ({
+      //     color_name: value.colors?.color_name,
+      //     id: value.colors.id,
+      //   }))
+      // );
     };
     getColors();
   }, [productId]);

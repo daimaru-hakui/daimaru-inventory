@@ -1,11 +1,15 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Layout from "../components/Layout/Layout";
 
 const HomeLayout = () => {
+  const { pathname } = useLocation();
+  console.log('path', pathname);
   return (
-    <Layout>
-        <Outlet />
-    </Layout>
+    pathname === '/' ? (
+      <Layout>home</Layout>
+    ) : (
+      <Outlet />
+    )
   );
 };
 
