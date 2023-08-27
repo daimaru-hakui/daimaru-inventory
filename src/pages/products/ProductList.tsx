@@ -27,7 +27,7 @@ const ProductList: FC = () => {
     };
     getProducts();
   }, []);
-  console.log(products);
+
   return (
     <Box maxW="full">
       <SimpleGrid columns={{ base: 1, lg: 2, "2xl": 4 }} spacing={6}>

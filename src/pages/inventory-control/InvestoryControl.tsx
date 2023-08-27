@@ -1,34 +1,33 @@
 import { Box, Tabs, TabList, TabPanels, Tab, TabPanel, Flex } from "@chakra-ui/react";
-import { BarcodeReader } from "../../components/inventory-control/barcodeReader";
+import { SmartReader } from "../../components/inventory-control/SmartReader";
 import { useState } from "react";
-import InventoryInput from "../../components/inventory-control/InventoryInput";
 import Layout from "../../components/Layout/Layout";
 import CartBar from "../../components/sidebar/SideCartBar";
 import ProductList from "../products/ProductList";
+import BarcodeReader from "../../components/inventory-control/BarcodeReader";
 
 const InvestoryControl = () => {
   const [details, setDetails] = useState([]);
   return (
     <Layout>
-
       <Flex gap={6}>
         <Box w='full'>
           <Tabs variant="soft-rounded" colorScheme="linkedin">
-            <TabList p={3} gap={3} justifyContent="center" bg='white' rounded='md' boxShadow='md'>
+            <TabList p={3} gap={6} justifyContent="center" bg='white' rounded='md' boxShadow='md'>
               <Tab>商品リスト</Tab>
-              <Tab>SCAN</Tab>
-              <Tab>入力フォーム</Tab>
+              <Tab>バーコード</Tab>
+              <Tab>スマホSCAN</Tab>
             </TabList>
 
-            <TabPanels>
-              <TabPanel px={0}>
+            <TabPanels mt={6}>
+              <TabPanel p={0}>
                 <ProductList />
               </TabPanel>
-              <TabPanel>
-                <BarcodeReader setDetails={setDetails} />
+              <TabPanel p={0}>
+                <BarcodeReader />
               </TabPanel>
               <TabPanel>
-                <InventoryInput />
+                <SmartReader setDetails={setDetails} />
               </TabPanel>
             </TabPanels>
           </Tabs>

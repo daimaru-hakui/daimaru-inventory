@@ -22,6 +22,7 @@ type Props = {
 type Inputs = {
   id: string;
   quantity: number;
+  stock: number;
 }[];
 
 const ProductForm: FC<Props> = ({ product, onClose }) => {
@@ -30,11 +31,11 @@ const ProductForm: FC<Props> = ({ product, onClose }) => {
   const setCarts = useCartStore((state) => state.setCarts);
 
 
-  const handleNumber = (e: string, id: string) => {
+  const handleInputNumber = (e: string, id: string, stock: number) => {
     const value = Number(e);
     setInputData((prev) => {
       const newArray = prev.filter((obj) => (obj.id !== id));
-      return [...newArray, { id, quantity: value }];
+      return [...newArray, { id, quantity: value, stock }];
     });
   };
 
@@ -58,7 +59,8 @@ const ProductForm: FC<Props> = ({ product, onClose }) => {
           `
         )
         .eq("product_id", product.id)
-        .order("color_name", { foreignTable: "colors", ascending: false });
+        .order("color_name", { foreignTable: "colors", ascending: false })
+        .order("stock_place_id", { foreignTable: "skus", ascending: true });
 
       if (error) {
         console.error(error);
@@ -96,21 +98,21 @@ const ProductForm: FC<Props> = ({ product, onClose }) => {
                 <Th textAlign="center">カラー</Th>
                 <Th textAlign="center">サイズ</Th>
                 <Th textAlign="center">価格</Th>
-                <Th>在庫1</Th>
+                <Th>配送センター</Th>
                 <Th>発注数量</Th>
-                <Th>在庫2</Th>
+                <Th>徳島工場</Th>
                 <Th>発注数量</Th>
               </Tr>
             </Thead>
             <Tbody>
               {items?.map((item: any, idx: number) => (
-                <ProductFormRow key={idx} item={item} handleNumber={handleNumber} />
+                <ProductFormRow key={idx} item={item} handleInputNumber={handleInputNumber} />
               ))}
             </Tbody>
           </Table>
         </TableContainer>
         <Box w='full' mt={6}>
-          <Button w='full' colorScheme="linkedin" type='submit'>確定</Button>
+          <Button w='full' colorScheme="linkedin" type='submit'>登録</Button>
         </Box>
       </form>
     </Box>

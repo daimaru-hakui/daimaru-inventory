@@ -1,64 +1,44 @@
-import { Box, Button, Container, Flex } from "@chakra-ui/react";
-import { BrowserMultiFormatReader, IScannerControls } from "@zxing/browser";
-import { FC, useRef, useState } from "react";
+import { Box, Heading, Input } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { supabase } from '../../utils/supabaseClient';
+import useCartStore from '../../store';
 
-type Props = {
-  setDetails: (prev: any) => void;
-};
+const BarcodeReader = () => {
+  const [skus, setSkus] = useState<any>([]);
+  const carts = useCartStore((state) => state.carts);
+  const setCarts = useCartStore((state) => state.setCarts);
+  const [barcodeInput, setBarcodeInput] = useState("");
 
-export const BarcodeReader: FC<Props> = ({ setDetails }) => {
-  const controlsRef = useRef<IScannerControls | null>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [reader, setReader] = useState<IScannerControls>();
+  useEffect(() => {
+    const getSkus = async () => {
+      const { data, error } = await supabase.from('skus').select('*');
+      if (error) console.log(error);
+      setSkus(data);
+    };
+    getSkus();
+  }, []);
 
-  const startCodeReader = async () => {
-    if (!videoRef.current) return;
-    const codeReader = new BrowserMultiFormatReader();
-    // const codeReader = new BrowserQRCodeReader();
+  const handleBarcodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBarcodeInput(e.target.value);
 
-    const controls = await codeReader.decodeFromVideoDevice(
-      undefined,
-      videoRef.current,
-      (result, error, controls) => {
-        if (error) {
-          console.log("log");
-          return;
-        }
-        if (result) {
-          console.log(result.getText());
-          setDetails((prev: any) => [...prev, result.getText()]);
-        }
-        controlsRef.current?.stop();
-        controlsRef.current = controls;
-      }
-    );
-    setReader(controls);
   };
-
-  const resetCodeReader = () => {
-    if (!reader) return;
-    controlsRef.current = null;
-    reader.stop();
+  const handleBarcodeEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.code === "Enter") {
+      const sku = skus.find((sku: any) => sku.id === barcodeInput);
+      setBarcodeInput("");
+      if (!sku) return;
+      const result = carts.find((cart) => cart.id === sku.id);
+      if (result) return;
+      setCarts([{ id: barcodeInput, stock: sku.stock, quantity: 1 }]);
+    }
   };
 
   return (
-    <Container maxW={600}>
-      <Box
-        as="video"
-        id="video"
-        width="100%"
-        height="50vh"
-        bg="black"
-        ref={videoRef}
-      ></Box>
-      <Flex mt={3} gap={3}>
-        <Button w="full" onClick={resetCodeReader}>
-          Reset
-        </Button>
-        <Button w="full" colorScheme="linkedin" onClick={startCodeReader}>
-          Start
-        </Button>
-      </Flex>
-    </Container>
+    <Box p={6} bg='white' rounded="md" boxShadow="md">
+      <Heading as="h3" fontSize="lg" textAlign="left">バーコード</Heading>
+      <Input mt={3} value={barcodeInput} onChange={handleBarcodeChange} onKeyDown={(e) => handleBarcodeEnter(e)} />
+    </Box>
   );
 };
+
+export default BarcodeReader;

@@ -22,7 +22,7 @@ const ProductModal: FC<Props> = ({ product }) => {
     <>
       <Button size='sm' colorScheme='linkedin' onClick={onOpen}>選択</Button>
 
-      <Modal size='2xl' isOpen={isOpen} onClose={onClose}>
+      <Modal size='3xl' isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>商品</ModalHeader>

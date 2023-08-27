@@ -1,12 +1,23 @@
-import { NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Td, Tr } from '@chakra-ui/react';
+import { Box, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Td, Tr } from '@chakra-ui/react';
 import React, { FC } from 'react';
+import useCartStore from '../../store';
 
 type Props = {
   item: any;
-  handleNumber: (e: string, id: string) => void;
+  handleInputNumber: (e: string, id: string, stock: number) => void;
 };
 
-const ProductFormRow: FC<Props> = ({ item, handleNumber }) => {
+const ProductFormRow: FC<Props> = ({ item, handleInputNumber }) => {
+  const carts = useCartStore((state) => state.carts);
+  const outInFlag = useCartStore((state) => state.outInFlag);
+
+  const getQuantity = (id: string) => {
+    const result = carts.find((cart) => (
+      cart.id === id
+    ));
+    return result?.quantity || 0;
+  };
+
 
   return (
     <Tr key={item.id}>
@@ -19,13 +30,21 @@ const ProductFormRow: FC<Props> = ({ item, handleNumber }) => {
             {sku.stock}
           </Td>
           <Td>
-            <NumberInput min={0} w="80px" onChange={(e) => handleNumber(e, sku.id)} >
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
+            {getQuantity(sku.id) ? <Box py={2}>選択済み</Box> : (
+              <NumberInput
+                min={0}
+                max={outInFlag ? sku.stock : 10000}
+                w="80px"
+                defaultValue={getQuantity(sku.id)}
+                onChange={(e) => handleInputNumber(e, sku.id, sku.stock)}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            )}
           </Td>
         </React.Fragment>
       ))}

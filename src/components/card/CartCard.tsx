@@ -5,17 +5,20 @@ import { FaTrashCan } from "react-icons/fa6";
 import useCartStore from '../../store';
 
 type Props = {
-  cart: { id: string, quantity: number; };
+  cart: { id: string, quantity: number; stock: number; };
   deleteCart: () => void;
 };
 
 const CartCard: FC<Props> = ({ cart, deleteCart }) => {
-  const carts = useCartStore();
+  const carts = useCartStore((state) => state.carts);
+  const updateCarts = useCartStore((state) => state.updateCarts);
+  const outInFlag = useCartStore((state) => state.outInFlag);
   const [skus, setSkus] = useState<any>();
   const [image, setImage] = useState<any | null>(null);
   const [inputData, setInputData] = useState({
     id: "",
-    quantity: cart.quantity
+    quantity: cart.quantity,
+    stock: cart.stock
   });
 
   useEffect(() => {
@@ -45,8 +48,9 @@ const CartCard: FC<Props> = ({ cart, deleteCart }) => {
       getImage(skus.items.products.images);
   }, [skus]);
 
-  const handleNumber = (e: number, id: string) => {
-    setInputData({ quantity: Number(e), id: id });
+  const handleNumber = (e: number, id: string, stock: number) => {
+    setInputData({ quantity: Number(e), id: id, stock });
+    updateCarts({ quantity: Number(e), id: id, stock });
   };
 
   if (!skus) return;
@@ -65,26 +69,33 @@ const CartCard: FC<Props> = ({ cart, deleteCart }) => {
         h="80px"
         mr={1}
         src={image}
-        alt='Caffe Latte'
+        alt=''
       />
 
       <Flex justify="space-between" w="full">
-        <Flex px={3} align="flex-start" justify="center" direction="column">
-          <Heading size='sm'>{skus.items.products.product_number}</Heading>
-          <Text py='2' fontSize={2}>
+        <Flex px={3} align="flex-start" justify="center" direction="column" gap={1}>
+          <Heading size='sm'>{skus.items.products.product_number}
+            <Box as="span" ml={6}>{skus.items.sizes.size_name}</Box>
+          </Heading>
+          <Text fontSize={2}>
             {skus.items.products.product_name} <Box as="span" ml={3}>{skus.items.colors.color_name}</Box>
           </Text>
         </Flex>
         <Flex align="center">
-          {skus.items.sizes.size_name}
+          <Box>
+            <Box fontSize="xs">在庫数</Box>
+            <Box>{skus.stock}</Box>
+          </Box>
         </Flex>
+
         <Flex gap={3} align="center">
           <Box>
             <NumberInput
-              min={0}
               w="80px"
+              min={0}
+              max={outInFlag ? skus.stock : 10000}
               value={inputData.quantity}
-              onChange={(e) => handleNumber(Number(e), skus.id)}
+              onChange={(e) => handleNumber(Number(e), skus.id, skus.stock)}
             >
               <NumberInputField />
               <NumberInputStepper>
