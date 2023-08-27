@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { supabase } from "../../utils/supabaseClient";
 import SkuNewModal from "./ItemNewModal";
+import Layout from "../../components/Layout/Layout";
 
 const Product = () => {
   const { slug } = useParams();
@@ -72,55 +73,58 @@ const Product = () => {
   if (!skus) return;
 
   return (
-    <Container maxW={600} my={6} p={6} boxShadow="md" rounded="md" bg="white">
-      <Heading as="h1">商品詳細</Heading>
-      {image && (
-        <Image
-          mt={6}
-          w="full"
-          objectFit="cover"
-          src={image || null}
-          alt="Green double couch with wooden legs"
-          borderRadius="lg"
-        />
-      )}
-      <Flex mt={6} gap={3}>
-        <Box fontWeight="bold">品番</Box>
-        <Box>{product.product_number}</Box>
-      </Flex>
-      <Flex mt={1} gap={3}>
-        <Box fontWeight="bold">品名</Box>
-        <Box>{product.product_name}</Box>
-      </Flex>
-      <Flex mt={6} justify="center">
-        <SkuNewModal slug={slug} />
-      </Flex>
 
-      <TableContainer mt={12}>
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>品番</Th>
-              <Th>品名</Th>
-              <Th>カラー</Th>
-              <Th>サイズ</Th>
-              <Th>価格</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {skus.map((sku: any) => (
-              <Tr key={sku.id}>
-                <Td>{sku.products.product_number}</Td>
-                <Td>{sku.products.product_name}</Td>
-                <Td>{sku.colors.color_name}</Td>
-                <Td>{sku.sizes.size_name}</Td>
-                <Td>{sku.price}</Td>
+    <Layout>
+      <Container maxW={600} my={6} p={6} boxShadow="md" rounded="md" bg="white">
+        <Heading as="h1">商品詳細</Heading>
+        {image && (
+          <Image
+            mt={6}
+            w="full"
+            objectFit="cover"
+            src={image || null}
+            alt="Green double couch with wooden legs"
+            borderRadius="lg"
+          />
+        )}
+        <Flex mt={6} gap={3}>
+          <Box fontWeight="bold">品番</Box>
+          <Box>{product.product_number}</Box>
+        </Flex>
+        <Flex mt={1} gap={3}>
+          <Box fontWeight="bold">品名</Box>
+          <Box>{product.product_name}</Box>
+        </Flex>
+        <Flex mt={6} justify="center">
+          <SkuNewModal slug={slug} />
+        </Flex>
+
+        <TableContainer mt={12}>
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th>品番</Th>
+                <Th>品名</Th>
+                <Th>カラー</Th>
+                <Th>サイズ</Th>
+                <Th>価格</Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
-    </Container>
+            </Thead>
+            <Tbody>
+              {skus.map((sku: any) => (
+                <Tr key={sku.id}>
+                  <Td>{sku.products.product_number}</Td>
+                  <Td>{sku.products.product_name}</Td>
+                  <Td>{sku.colors.color_name}</Td>
+                  <Td>{sku.sizes.size_name}</Td>
+                  <Td>{sku.price}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </Container>
+    </Layout>
   );
 };
 

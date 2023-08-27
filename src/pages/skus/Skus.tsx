@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Table,
@@ -11,6 +11,7 @@ import {
   Thead,
 } from "@chakra-ui/react";
 import { supabase } from "../../utils/supabaseClient";
+import Layout from "../../components/Layout/Layout";
 
 const Skus = () => {
   const [items, setItems] = useState<any>([]);
@@ -38,38 +39,40 @@ const Skus = () => {
   }, []);
   console.log(items);
   return (
-    <Container p={6} maxW={900} bg="white" rounded="md" boxShadow="md">
-      <Box>在庫一覧</Box>
-      <TableContainer mt={6}>
-        <Table>
-          <Thead>
-            <Tr>
-              <Th>品番</Th>
-              <Th>商品名</Th>
-              <Th>サイズ</Th>
-              <Th>カラー</Th>
-              <Th>価格</Th>
-              <Th>在庫１</Th>
-              <Th>在庫２</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {items.map((item: any) => (
-              <Tr key={item.id}>
-                <Td>{item.products.product_number}</Td>
-                <Td>{item.products.product_name}</Td>
-                <Td>{item.sizes.size_name}</Td>
-                <Td>{item.colors.color_name}</Td>
-                <Td>{item.price}</Td>
-                {item.skus.map((sku: any) => (
-                  <Td key={sku.id}>{sku.stock}</Td>
-                ))}
+    <Layout>
+      <Container p={6} maxW={900} bg="white" rounded="md" boxShadow="md">
+        <Box>在庫一覧</Box>
+        <TableContainer mt={6}>
+          <Table>
+            <Thead>
+              <Tr>
+                <Th>品番</Th>
+                <Th>商品名</Th>
+                <Th>サイズ</Th>
+                <Th>カラー</Th>
+                <Th>価格</Th>
+                <Th>在庫１</Th>
+                <Th>在庫２</Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
-    </Container>
+            </Thead>
+            <Tbody>
+              {items.map((item: any) => (
+                <Tr key={item.id}>
+                  <Td>{item.products.product_number}</Td>
+                  <Td>{item.products.product_name}</Td>
+                  <Td>{item.sizes.size_name}</Td>
+                  <Td>{item.colors.color_name}</Td>
+                  <Td>{item.price}</Td>
+                  {item.skus.map((sku: any) => (
+                    <Td key={sku.id}>{sku.stock}</Td>
+                  ))}
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </Container>
+    </Layout>
   );
 };
 

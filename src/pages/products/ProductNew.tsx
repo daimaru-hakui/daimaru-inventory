@@ -13,6 +13,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { supabase } from "../../utils/supabaseClient";
+import Layout from "../../components/Layout/Layout";
 
 type Inputs = {
   productNumber: string;
@@ -22,7 +23,7 @@ type Inputs = {
 
 const ProductNew: FC = () => {
   const [categories, setCategories] = useState<
-    { id: string; category_name: string }[] | null
+    { id: string; category_name: string; }[] | null
   >([]);
   const [fileUpload, setFileUpload] = useState<File[]>([]);
   const {
@@ -32,7 +33,7 @@ const ProductNew: FC = () => {
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
     const images = await addImages(fileUpload);
-    console.log(images)
+    console.log(images);
     await addProduct(data, images);
   };
 
@@ -58,12 +59,12 @@ const ProductNew: FC = () => {
     const fileArray = fileUpload.map(async (file) => {
       const uuid = uuidv4();
       const { data, error } = await supabase.storage
-      .from("items")
-      .upload(uuid, file, {
-        cacheControl: "3600",
-        upsert: false,
-      });
-      console.log("data",data)
+        .from("items")
+        .upload(uuid, file, {
+          cacheControl: "3600",
+          upsert: false,
+        });
+      console.log("data", data);
       if (error) return;
       return data?.path;
     });
@@ -99,57 +100,59 @@ const ProductNew: FC = () => {
   }, []);
 
   return (
-    <Container p={6} maxW={600} bg="white" rounded="md" boxShadow="md">
-      <Heading as="h1">商品登録</Heading>
-      <Box as="form" mt={6} onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={6}>
-          <FormControl>
-            <FormLabel fontSize="sm">品番</FormLabel>
-            <Input
-              type="text"
-              {...register("productNumber", { required: true })}
-            />
-            {errors.productNumber && (
-              <Box color="red" fontSize="sm" textAlign="left">
-                品番を入力してください。
-              </Box>
-            )}
-          </FormControl>
-          <FormControl>
-            <FormLabel fontSize="sm">品名</FormLabel>
-            <Input
-              type="text"
-              {...register("productName", { required: true })}
-            />
-            {errors.productName && (
-              <Box color="red" fontSize="sm" textAlign="left">
-                品番を入力してください。
-              </Box>
-            )}
-          </FormControl>
-          <FormControl>
-            <FormLabel fontSize="sm">カテゴリー</FormLabel>
-            <Select
-              placeholder="カテゴリー"
-              {...register("category", { required: true })}
-            >
-              {categories?.map(({ id, category_name }) => (
-                <option key={id} value={id}>
-                  {category_name}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl>
-            <FormLabel fontSize="sm">画像</FormLabel>
-            <Input type="file" onChange={addPreviewImage} />
-          </FormControl>
-          <Button mt={6} type="submit" colorScheme="linkedin">
-            送信
-          </Button>
-        </Stack>
-      </Box>
-    </Container>
+    <Layout>
+      <Container p={6} maxW={600} bg="white" rounded="md" boxShadow="md">
+        <Heading as="h1">商品登録</Heading>
+        <Box as="form" mt={6} onSubmit={handleSubmit(onSubmit)}>
+          <Stack spacing={6}>
+            <FormControl>
+              <FormLabel fontSize="sm">品番</FormLabel>
+              <Input
+                type="text"
+                {...register("productNumber", { required: true })}
+              />
+              {errors.productNumber && (
+                <Box color="red" fontSize="sm" textAlign="left">
+                  品番を入力してください。
+                </Box>
+              )}
+            </FormControl>
+            <FormControl>
+              <FormLabel fontSize="sm">品名</FormLabel>
+              <Input
+                type="text"
+                {...register("productName", { required: true })}
+              />
+              {errors.productName && (
+                <Box color="red" fontSize="sm" textAlign="left">
+                  品番を入力してください。
+                </Box>
+              )}
+            </FormControl>
+            <FormControl>
+              <FormLabel fontSize="sm">カテゴリー</FormLabel>
+              <Select
+                placeholder="カテゴリー"
+                {...register("category", { required: true })}
+              >
+                {categories?.map(({ id, category_name }) => (
+                  <option key={id} value={id}>
+                    {category_name}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl>
+              <FormLabel fontSize="sm">画像</FormLabel>
+              <Input type="file" onChange={addPreviewImage} />
+            </FormControl>
+            <Button mt={6} type="submit" colorScheme="linkedin">
+              送信
+            </Button>
+          </Stack>
+        </Box>
+      </Container>
+    </Layout>
   );
 };
 

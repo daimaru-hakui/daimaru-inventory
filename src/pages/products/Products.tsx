@@ -14,6 +14,7 @@ import { FC, useEffect, useState } from "react";
 import { supabase } from "../../utils/supabaseClient";
 // import { Link } from "react-router-dom";
 import ProductCard from "../../components/card/ProductCard";
+import Layout from "../../components/Layout/Layout";
 
 const Products: FC = () => {
   const [products, setProducts] = useState<any>([]);
@@ -38,13 +39,14 @@ const Products: FC = () => {
   }, []);
   console.log(products);
   return (
-    <Container maxW="830px">
-      <Flex gap={6} flexWrap="wrap" justify="center">
-        {products.map((product: any) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </Flex>
-      {/* <TableContainer>
+    <Layout>
+      <Container maxW="830px">
+        <Flex gap={6} flexWrap="wrap" justify="center">
+          {products.map((product: any) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </Flex>
+        {/* <TableContainer>
           <Table variant="simple">
             <Thead>
               <Tr>
@@ -68,7 +70,8 @@ const Products: FC = () => {
             </Tbody>
           </Table>
         </TableContainer> */}
-    </Container>
+      </Container>
+    </Layout>
   );
 };
 
