@@ -28,8 +28,8 @@ const Skus = () => {
         sizes(id,size_name),
         skus(id,stock,stock_places(id,stock_place_name))`
         )
-        .order("product_code", { ascending: true });
-      // .order("product_number", { foreignTable: "products", ascending: true });
+        .order("product_code", { ascending: true })
+        .order("stock_place_id", { foreignTable: "skus", ascending: true });
       if (error) {
         console.error(error);
       }
@@ -51,8 +51,8 @@ const Skus = () => {
                 <Th>サイズ</Th>
                 <Th>カラー</Th>
                 <Th>価格</Th>
-                <Th>在庫１</Th>
-                <Th>在庫２</Th>
+                <Th>配送センター</Th>
+                <Th>徳島工場</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -62,9 +62,9 @@ const Skus = () => {
                   <Td>{item.products.product_name}</Td>
                   <Td>{item.sizes.size_name}</Td>
                   <Td>{item.colors.color_name}</Td>
-                  <Td>{item.price}</Td>
+                  <Td isNumeric>{item.price}円</Td>
                   {item.skus.map((sku: any) => (
-                    <Td key={sku.id}>{sku.stock}</Td>
+                    <Td key={sku.id} isNumeric>{sku.stock}</Td>
                   ))}
                 </Tr>
               ))}

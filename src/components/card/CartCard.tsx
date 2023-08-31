@@ -14,7 +14,7 @@ const CartCard: FC<Props> = ({ cart, deleteCart }) => {
   const updateCarts = useCartStore((state) => state.updateCarts);
   const outInFlag = useCartStore((state) => state.outInFlag);
   const [skus, setSkus] = useState<any>();
-  const [image, setImage] = useState<any | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>("");
   const [inputData, setInputData] = useState({
     id: "",
     quantity: cart.quantity,
@@ -42,7 +42,7 @@ const CartCard: FC<Props> = ({ cart, deleteCart }) => {
         .from("items")
         .createSignedUrl(files[0], 600);
       if (error) return;
-      setImage(data?.signedUrl);
+      setImageUrl(data?.signedUrl);
     };
     if (skus?.items?.products?.images)
       getImage(skus.items.products.images);
@@ -68,8 +68,8 @@ const CartCard: FC<Props> = ({ cart, deleteCart }) => {
         w="80px"
         h="80px"
         mr={1}
-        src={image}
-        alt=''
+        src={imageUrl}
+        alt=""
       />
 
       <Flex justify="space-between" w="full">
@@ -93,7 +93,7 @@ const CartCard: FC<Props> = ({ cart, deleteCart }) => {
             <NumberInput
               w="80px"
               min={0}
-              max={outInFlag ? skus.stock : 10000}
+              max={outInFlag === "OUT" ? skus.stock : 10000}
               value={inputData.quantity}
               onChange={(e) => handleNumber(Number(e), skus.id, skus.stock)}
             >

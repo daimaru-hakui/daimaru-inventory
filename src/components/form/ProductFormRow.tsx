@@ -23,7 +23,7 @@ const ProductFormRow: FC<Props> = ({ item, handleInputNumber }) => {
     <Tr key={item.id}>
       <Td textAlign="center">{item.colors.color_name}</Td>
       <Td textAlign="center">{item.sizes.size_name}</Td>
-      <Td textAlign="center">{item.price}</Td>
+      <Td textAlign="center">{item.price}円</Td>
       {item.skus.map((sku: any) => (
         <React.Fragment key={sku.id}>
           <Td isNumeric>
@@ -33,7 +33,7 @@ const ProductFormRow: FC<Props> = ({ item, handleInputNumber }) => {
             {getQuantity(sku.id) ? <Box py={2}>選択済み</Box> : (
               <NumberInput
                 min={0}
-                max={outInFlag ? sku.stock : 10000}
+                max={outInFlag === "OUT" ? sku.stock : 10000}
                 w="80px"
                 defaultValue={getQuantity(sku.id)}
                 onChange={(e) => handleInputNumber(e, sku.id, sku.stock)}

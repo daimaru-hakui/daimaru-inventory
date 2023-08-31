@@ -6,6 +6,8 @@ import { Session } from "@supabase/supabase-js";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { HomeLayout, InvestoryControl, Login, Product, ProductNew, Products, Skus } from "./pages";
 import Sku from "./pages/skus/Sku";
+import IncomingHistory from "./pages/history/IncomingHistory";
+import OutgoingHistory from "./pages/history/OutgoingHistory";
 
 function App() {
   const [session, setSession] = useState<Session | null>(null);
@@ -49,6 +51,14 @@ function App() {
         {
           path: "investroy-control",
           element: <InvestoryControl />,
+        },
+        {
+          path: "outgoing-history",
+          element: <OutgoingHistory />,
+        },
+        {
+          path: "incoming-history",
+          element: <IncomingHistory />,
         },
       ],
     },

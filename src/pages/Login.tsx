@@ -53,9 +53,9 @@ const Login = () => {
   }, [navigate]);
 
   return (
-    <Flex w="full">
+    <Flex w="full" bg="#f4f4f4">
       <Flex justify="center" align="center" w="100%" h="100vh">
-        <Container maxW="300px">
+        <Container maxW="300px" p={6} bg="white" rounded="md">
           <Box as="form" autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
             <Flex justify="center" direction="column" align="center">
               <Stack spacing={3} w="100%">

@@ -10,22 +10,41 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { FC } from "react";
+import { FC ,useEffect,useState} from "react";
 import { Link } from "react-router-dom";
 import PostModal from "../modal/ProductModal";
+import { supabase } from "../../utils/supabaseClient";
 
 type Props = {
   product: any;
 };
 
 const ProductCard: FC<Props> = ({ product }) => {
+  const [imageUrl, setImageUrl] = useState<string>("");
+
+  useEffect(() => {
+    const getImage = async (files: string[] = []) => {
+      if (!files) return;
+      const { data, error } = await supabase.storage
+        .from("items")
+        .createSignedUrl(files[0], 600);
+      if (error) return;
+      setImageUrl(data?.signedUrl);
+    };
+    if (product?.images)
+      getImage(product.images);
+  }, [product]);
+
   return (
     <Card w="full">
       <CardBody>
         <Image
-          src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-          alt="Green double couch with wooden legs"
+          src={imageUrl}
+          alt={product.product_number}
           borderRadius="lg"
+          width="full"
+          height={250}
+          objectFit="cover"
         />
         <Stack mt="6" spacing="3" textAlign="left">
           <Heading size="md">{product.product_number}</Heading>

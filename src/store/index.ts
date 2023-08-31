@@ -1,28 +1,28 @@
 import { create } from 'zustand';
 
-type Post = {
+export type Cart = {
   id: string;
   quantity: number;
   stock:number
 };
 
 type CartState = {
-  carts: Post[];
-  setCarts: (carts: Post[]) => void;
-  updateCarts: (cart: Post) => void;
+  carts: Cart[];
+  setCarts: (carts: Cart[]) => void;
+  updateCarts: (cart: Cart) => void;
   resetCarts: () => void;
   deleteCart: (index: number) => void
-  outInFlag: boolean;
-  setOutInFlag:(payload:boolean) => void
+  outInFlag: "OUT" | "IN";
+  setOutInFlag:(payload:"OUT" | "IN") => void
 };
 
 const useCartStore = create<CartState>((set) => ({
   carts: [],
   setCarts: (carts) => set((state) => ({ carts: [...state.carts, ...carts] })),
-  updateCarts: (value:Post) => set((state) => ({carts:state.carts.map((cart) => (cart.id === value.id ? { ...cart, quantity: value.quantity } : cart))})),
+  updateCarts: (value:Cart) => set((state) => ({carts:state.carts.map((cart) => (cart.id === value.id ? { ...cart, quantity: value.quantity } : cart))})),
   resetCarts: () => set(() => ({ carts: [] })),
   deleteCart: (index: number) => set((state) => ({ carts: state.carts.filter((_, idx: number) => (idx !== index)) })),
-  outInFlag: true,
+  outInFlag: "OUT",
   setOutInFlag: (flag) => set(() => ({ outInFlag: flag }))
 })
 );

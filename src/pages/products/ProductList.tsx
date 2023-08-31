@@ -14,7 +14,7 @@ const ProductList: FC = () => {
       const { data, error } = await supabase
         .from("products")
         .select(
-          `id,product_number,product_name,
+          `id,product_number,product_name,images,
           items(price,skus(stock,stock_places(stock_place_name)),
           colors(id,color_name),
           sizes(id,size_name))`

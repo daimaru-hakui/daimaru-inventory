@@ -24,7 +24,7 @@ export const Header: FC = () => {
   }, []);
 
   return (
-    <Flex as="header" w="full" bg="white" align="center" >
+    <Flex as="header" w="full" bg="white" align="center" position="sticky" top={0} zIndex={10}>
       <Flex as="nav" w="full" h={12} px={6} mx="auto" justify="space-between" align="center" boxShadow="md">
         <Box>
           <Link to="/">大丸白衣</Link>
@@ -40,7 +40,13 @@ export const Header: FC = () => {
             <Link to="/products/new">商品登録</Link>
           </Box>
           <Box>
-            <Link to="/investroy-control">商品一覧</Link>
+            <Link to="/outgoing-history">出荷履歴</Link>
+          </Box>
+          <Box>
+            <Link to="/incoming-history">入荷履歴</Link>
+          </Box>
+          <Box>
+            <Link to="/investroy-control">入出庫処理</Link>
           </Box>
           <Box>
             {session ? (

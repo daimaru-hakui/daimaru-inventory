@@ -27,6 +27,7 @@ type Inputs = {
 
 const ProductForm: FC<Props> = ({ product, onClose }) => {
   const [items, setItems] = useState<any>();
+  const [imageUrl, setImageUrl] = useState<string>("");
   const [inputData, setInputData] = useState<Inputs>([]);
   const setCarts = useCartStore((state) => state.setCarts);
 
@@ -70,14 +71,32 @@ const ProductForm: FC<Props> = ({ product, onClose }) => {
     getItems();
   }, [product.id]);
 
+  useEffect(() => {
+    const getImage = async (files: string[] = []) => {
+      if (!files) return;
+      const { data, error } = await supabase.storage
+        .from("items")
+        .createSignedUrl(files[0], 600);
+      if (error) return;
+      if(data) {
+        setImageUrl(data?.signedUrl);
+      }
+    };
+    if (product?.images)
+      getImage(product.images);
+  }, [product]);
+
   if (!product) return;
 
   return (
     <Box px={6}>
       <Image
-        src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-        alt="Green double couch with wooden legs"
+        src={imageUrl}
+        alt={product.product_number}
         borderRadius="lg"
+        w={200}
+        h={200}
+        objectFit="cover"
       />
       <Box mt={6} textAlign="left">
         <Box>{product.product_number}</Box>

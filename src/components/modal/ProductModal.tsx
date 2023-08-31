@@ -1,5 +1,5 @@
 import { Button, useDisclosure } from '@chakra-ui/react';
-import React, { FC } from 'react';
+import  { FC } from 'react';
 import {
   Modal,
   ModalOverlay,
